@@ -8,14 +8,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.prs.business.vendor.Vendor;
+
 @Entity
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	//private int vendorID;
 	@ManyToOne
 	@JoinColumn(name="vendorID")
+	private Vendor vendor;
 	@Column(name = "partNumber")
 	private String vendorPartNumber;
 	private String name;
@@ -23,16 +25,15 @@ public class Product {
 	private String unit;
 	private String photoPath;
 	
-	
 	public Product() {
 		super();
 	}
 
-	public Product(int id, int vendorID, String vendorPartNumber, String name, double price, String unit,
+	public Product(int id, Vendor vendor, String vendorPartNumber, String name, double price, String unit,
 			String photoPath) {
 		super();
 		this.id = id;
-		this.vendorID = vendorID;
+		this.vendor = vendor;
 		this.vendorPartNumber = vendorPartNumber;
 		this.name = name;
 		this.price = price;
@@ -40,9 +41,9 @@ public class Product {
 		this.photoPath = photoPath;
 	}
 
-	public Product(int vendorID, String vendorPartNumber, String name, double price, String unit, String photoPath) {
+	public Product(Vendor vendor, String vendorPartNumber, String name, double price, String unit, String photoPath) {
 		super();
-		this.vendorID = vendorID;
+		this.vendor = vendor;
 		this.vendorPartNumber = vendorPartNumber;
 		this.name = name;
 		this.price = price;
@@ -58,12 +59,12 @@ public class Product {
 		this.id = id;
 	}
 
-	public int getVendorID() {
-		return vendorID;
+	public Vendor getVendor() {
+		return vendor;
 	}
 
-	public void setVendorID(int vendorID) {
-		this.vendorID = vendorID;
+	public void setVendor(Vendor vendor) {
+		this.vendor = vendor;
 	}
 
 	public String getVendorPartNumber() {
@@ -108,7 +109,7 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", " + vendorID + ", vendorPartNumber=" + vendorPartNumber + ", name="
+		return "Product [id=" + id + ", " + vendor + ", vendorPartNumber=" + vendorPartNumber + ", name="
 				+ name + ", price=" + price + ", unit=" + unit + ", photoPath=" + photoPath + "]";
 	}
 	

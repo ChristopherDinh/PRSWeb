@@ -3,8 +3,8 @@ package com.prs.util;
 public class PRSMaintenanceReturn {
 	private String result;
 	private String message;
-	public static final String SUCCESS="success";
-	public static final String FAILURE="failure";
+	public static final String SUCCESS="Success";
+	public static final String FAILURE="Failure";
 	
 	public PRSMaintenanceReturn() {
 		result = "Initialized result, not yet set.";
@@ -48,19 +48,21 @@ public class PRSMaintenanceReturn {
 	}
 
 	/*
-	 * Get a maintenance return obj and include a message
+	 * Get a maintenance return obj and include an error message
 	 */
-	public static PRSMaintenanceReturn getMaintReturn(Object obj, String msg) {
+	public static PRSMaintenanceReturn getMaintReturnError(Object obj, String msg) {
 		PRSMaintenanceReturn r = new PRSMaintenanceReturn();
+		String errMsg = "";
+		r.setResult(FAILURE);
 		if (obj!=null) {
-			r.setResult(SUCCESS);
-			r.setMessage(obj.getClass().getSimpleName()+" maintenance success");
+			errMsg = (obj.getClass().getSimpleName()+" maintenance error: ");
 		}
 		else {
-			r.setResult(FAILURE);
 			// Can't use obj.getClass() because obj is null
-			r.setMessage("msg");
+			errMsg = "Maintenance error: ";			
 		}
+		errMsg+=msg;
+		r.setMessage(errMsg);
 		return r;
 
 	}

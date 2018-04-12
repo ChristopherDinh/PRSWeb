@@ -3,6 +3,7 @@ package com.prs.business.web;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.prs.business.purchaseRequest.PurchaseRequest;
+import com.prs.business.purchaseRequest.PurchaseRequestLineItemRepository;
 import com.prs.business.purchaseRequest.PurchaseRequestRepository;
 import com.prs.util.PRSMaintenanceReturn;
 
@@ -21,6 +23,7 @@ import com.prs.util.PRSMaintenanceReturn;
 public class PurchaseRequestController {
 	@Autowired 
 	private PurchaseRequestRepository purchaseRequestRepository;
+	
 
 	@GetMapping(path="/List")
 	public @ResponseBody Iterable<PurchaseRequest> getAllPurchaseRequest() {
@@ -38,11 +41,15 @@ public class PurchaseRequestController {
 	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
 		try {
 			purchaseRequestRepository.save(purchaseRequest);
+			return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
+		}
+		catch (DataIntegrityViolationException dive) {
+			return PRSMaintenanceReturn.getMaintReturnError(purchaseRequest, dive.getRootCause().toString());
 		}
 		catch (Exception e) {
-			purchaseRequest = null;
+			e.printStackTrace();
+			return PRSMaintenanceReturn.getMaintReturnError(purchaseRequest, e.getMessage());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
 	}
 	@GetMapping(path="/Remove")
 	public @ResponseBody PRSMaintenanceReturn deletePurchaseRequest (@RequestParam int id) {
