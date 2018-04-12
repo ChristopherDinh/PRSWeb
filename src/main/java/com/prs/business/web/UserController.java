@@ -20,7 +20,7 @@ import com.prs.util.PRSMaintenanceReturn;
 
 @Controller   
 @RequestMapping(path="/Users")
-public class UserController {
+public class UserController extends BaseController{
 	@Autowired 
 	private UserRepository userRepository;
 

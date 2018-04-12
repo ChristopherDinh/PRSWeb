@@ -25,14 +25,18 @@ public class PurchaseRequest {
 	private User user;
 	private String description;
 	private String justification;
-	@Transient
 	private Timestamp dateNeeded;
 	private String deliveryMode;
 	private String status;
 	private double total;
-	@Transient
 	private LocalDateTime submittedDate;
 	private String reasonForRejection;
+	public static final String STATUS_NEW = "New";
+	public static final String STATUS_REVIEW = "Review";
+	public static final String STATUS_EDIT = "Edit";
+	public static final String STATUS_APPROVED = "Approved";
+	public static final String STATUS_REJECTED = "Rejected";
+	
 	
 	public PurchaseRequest() {
 		super();

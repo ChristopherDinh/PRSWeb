@@ -19,7 +19,7 @@ import com.prs.util.PRSMaintenanceReturn;
 
 @Controller   
 @RequestMapping(path="/PurchaseRequestLineItems")
-public class PurchseRequestLineItemController {
+public class PurchseRequestLineItemController extends BaseController{
 	@Autowired 
 	private PurchaseRequestLineItemRepository purchaseRequestLineItemRepository;
 

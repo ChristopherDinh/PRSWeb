@@ -18,7 +18,7 @@ import com.prs.util.PRSMaintenanceReturn;
 
 @Controller   
 @RequestMapping(path="/Products")
-public class ProductController {
+public class ProductController extends BaseController{
 	@Autowired 
 	private ProductRepository productRepository;
 

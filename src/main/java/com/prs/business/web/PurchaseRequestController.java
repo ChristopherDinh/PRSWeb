@@ -20,7 +20,7 @@ import com.prs.util.PRSMaintenanceReturn;
 
 @Controller   
 @RequestMapping(path="/PurchaseRequests")
-public class PurchaseRequestController {
+public class PurchaseRequestController extends BaseController{
 	@Autowired 
 	private PurchaseRequestRepository purchaseRequestRepository;
 	
