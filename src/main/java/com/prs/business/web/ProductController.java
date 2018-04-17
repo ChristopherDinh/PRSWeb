@@ -1,8 +1,10 @@
 package com.prs.business.web;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,42 +29,51 @@ public class ProductController extends BaseController{
 		return productRepository.findAll();
 	}
 	@GetMapping(path="/Get")
-	public @ResponseBody Product getProduct(@RequestParam int id) {
+	public @ResponseBody List<Product> getProduct(@RequestParam int id) {
 		Optional<Product> v= productRepository.findById(id);
-		if (v.isPresent())
-			return v.get();
-		else
-			return null;
+		return getReturnArray(v);
 	}
 	@PostMapping(path="/Add")
 	public @ResponseBody PRSMaintenanceReturn addNewProduct (@RequestBody Product product) {
 		try {
 			productRepository.save(product);
+			return PRSMaintenanceReturn.getMaintReturn(product);
+		}
+		catch (DataIntegrityViolationException dive) {
+			return PRSMaintenanceReturn.getMaintReturnError(product, dive.getRootCause().toString());
 		}
 		catch (Exception e) {
-			product = null;
+			e.printStackTrace();
+			return PRSMaintenanceReturn.getMaintReturnError(product, e.getMessage());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(product);
 	}
 	@GetMapping(path="/Remove")
 	public @ResponseBody PRSMaintenanceReturn deleteProduct (@RequestParam int id) {
 		Optional<Product> product = productRepository.findById(id);
 		try {
 			productRepository.delete(product.get());
+			return PRSMaintenanceReturn.getMaintReturn(product.get());
+		}
+		catch (DataIntegrityViolationException dive) {
+		return PRSMaintenanceReturn.getMaintReturnError(product, dive.getRootCause().toString());	
 		}
 		catch (Exception e) {
-			product = null;
+			e.printStackTrace();
+			return PRSMaintenanceReturn.getMaintReturnError(product, e.getMessage());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(product.get());
 	}
 	@PostMapping(path="/Change")
 	public @ResponseBody PRSMaintenanceReturn updateProduct (@RequestBody Product product) {
 		try {
 			productRepository.save(product);
+			return PRSMaintenanceReturn.getMaintReturn(product);
+		}
+		catch (DataIntegrityViolationException dive) {
+			return PRSMaintenanceReturn.getMaintReturnError(product, dive.getRootCause().toString());
 		}
 		catch (Exception e) {
-			product = null;
+			return PRSMaintenanceReturn.getMaintReturnError(product, e.toString());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(product);
+		
 	}
 }

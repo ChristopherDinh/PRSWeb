@@ -1,5 +1,7 @@
 package com.prs.business.web;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import com.prs.util.PRSMaintenanceReturn;
 public class PurchaseRequestController extends BaseController{
 	@Autowired 
 	private PurchaseRequestRepository purchaseRequestRepository;
+	@Autowired
+	private PurchaseRequestLineItemRepository purchaseRequestLineItemRepository;
 	
 
 	@GetMapping(path="/List")
@@ -30,15 +34,14 @@ public class PurchaseRequestController extends BaseController{
 		return purchaseRequestRepository.findAll();
 	}
 	@GetMapping(path="/Get")
-	public @ResponseBody PurchaseRequest getPurchaseRequest(@RequestParam int id) {
+	public @ResponseBody List<PurchaseRequest> getPurchaseRequest(@RequestParam int id) {
 		Optional<PurchaseRequest> v= purchaseRequestRepository.findById(id);
-		if (v.isPresent())
-			return v.get();
-		else
-			return null;
+		return getReturnArray(v.get());
 	}
 	@PostMapping(path="/Add")
 	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		purchaseRequest.setStatus(PurchaseRequest.STATUS_NEW);
 		try {
 			purchaseRequestRepository.save(purchaseRequest);
 			return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
@@ -71,5 +74,19 @@ public class PurchaseRequestController extends BaseController{
 			purchaseRequest = null;
 		}
 		return PRSMaintenanceReturn.getMaintReturn(purchaseRequest);
+	}
+	@PostMapping(path="/SubmitForReview") 
+	public @ResponseBody PRSMaintenanceReturn submitForReview (@RequestBody PurchaseRequest pr) {
+		try {
+			pr.setStatus(PurchaseRequest.STATUS_REVIEW);
+			pr.setSubmittedDate(new Timestamp(System.currentTimeMillis()));
+			purchaseRequestRepository.save(pr);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			pr = null;
+		}
+		
+		return PRSMaintenanceReturn.getMaintReturn(pr);
 	}
 }

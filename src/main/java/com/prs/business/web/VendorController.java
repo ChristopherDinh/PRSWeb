@@ -1,9 +1,11 @@
 package com.prs.business.web;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,7 @@ import com.prs.util.PRSMaintenanceReturn;
 
 @Controller   
 @RequestMapping(path="/Vendors")
-public class VendorController {
+public class VendorController extends BaseController {
 	@Autowired 
 	private VendorRepository vendorRepository;
 
@@ -28,42 +30,51 @@ public class VendorController {
 		return vendorRepository.findAll();
 	}
 	@GetMapping(path="/Get")
-	public @ResponseBody Vendor getVendor(@RequestParam int id) {
+	public @ResponseBody List<Vendor> getVendor(@RequestParam int id) {
 		Optional<Vendor> v= vendorRepository.findById(id);
-		if (v.isPresent())
-			return v.get();
-		else
-			return null;
+		return getReturnArray(v);
 	}
 	@PostMapping(path="/Add")
 	public @ResponseBody PRSMaintenanceReturn addNewVendor (@RequestBody Vendor vendor) {
 		try {
 			vendorRepository.save(vendor);
+			return PRSMaintenanceReturn.getMaintReturn(vendor);
+		}
+		catch (DataIntegrityViolationException dive) {
+			return PRSMaintenanceReturn.getMaintReturnError(vendor, dive.getRootCause().toString());
 		}
 		catch (Exception e) {
-			vendor = null;
+			e.printStackTrace();
+			return PRSMaintenanceReturn.getMaintReturnError(vendor, e.getMessage());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(vendor);
 	}
 	@GetMapping(path="/Remove")
 	public @ResponseBody PRSMaintenanceReturn deleteVendor (@RequestParam int id) {
 		Optional<Vendor> vendor = vendorRepository.findById(id);
 		try {
 			vendorRepository.delete(vendor.get());
+			return PRSMaintenanceReturn.getMaintReturn(vendor);
+		}
+		catch (DataIntegrityViolationException dive) {
+			return PRSMaintenanceReturn.getMaintReturnError(vendor, dive.getRootCause().toString());
 		}
 		catch (Exception e) {
-			vendor = null;
+			e.printStackTrace();
+			return PRSMaintenanceReturn.getMaintReturnError(vendor, e.getMessage());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(vendor.get());
 	}
 	@PostMapping(path="/Change")
 	public @ResponseBody PRSMaintenanceReturn updateVendor (@RequestBody Vendor vendor) {
 		try {
 			vendorRepository.save(vendor);
+			return PRSMaintenanceReturn.getMaintReturn(vendor);
+		}
+		catch (DataIntegrityViolationException dive) {
+			return PRSMaintenanceReturn.getMaintReturnError(vendor, dive.getRootCause().toString());
 		}
 		catch (Exception e) {
-			vendor = null;
+			e.printStackTrace();
+			return PRSMaintenanceReturn.getMaintReturnError(vendor, e.getMessage());
 		}
-		return PRSMaintenanceReturn.getMaintReturn(vendor);
 	}
 }

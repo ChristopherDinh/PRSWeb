@@ -1,9 +1,10 @@
 package com.prs.business.purchaseRequest;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
-import javax.persistence.Column;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.springframework.data.annotation.Transient;
 
 import com.prs.business.user.User;
 
@@ -25,11 +25,11 @@ public class PurchaseRequest {
 	private User user;
 	private String description;
 	private String justification;
-	private Timestamp dateNeeded;
+	private Date dateNeeded;
 	private String deliveryMode;
 	private String status;
 	private double total;
-	private LocalDateTime submittedDate;
+	private Timestamp submittedDate;
 	private String reasonForRejection;
 	public static final String STATUS_NEW = "New";
 	public static final String STATUS_REVIEW = "Review";
@@ -43,8 +43,8 @@ public class PurchaseRequest {
 	}
 	
 
-	public PurchaseRequest(int id, User user, String description, String justification, Timestamp dateNeeded,
-			String deliveryMode, String status, double total, LocalDateTime submittedDate) {
+	public PurchaseRequest(int id, User user, String description, String justification, Date dateNeeded,
+			String deliveryMode, String status, double total, Timestamp submittedDate) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -58,8 +58,8 @@ public class PurchaseRequest {
 	}
 
 
-	public PurchaseRequest(User user, String description, String justification, Timestamp dateNeeded, String deliveryMode,
-			String status, double total, LocalDateTime submittedDate) {
+	public PurchaseRequest(User user, String description, String justification, Date dateNeeded, String deliveryMode,
+			String status, double total, Timestamp submittedDate) {
 		super();
 		this.user = user;
 		this.description = description;
@@ -112,12 +112,12 @@ public class PurchaseRequest {
 	}
 
 
-	public Timestamp getDateNeeded() {
+	public Date getDateNeeded() {
 		return dateNeeded;
 	}
 
 
-	public void setDateNeeded(Timestamp dateNeeded) {
+	public void setDateNeeded(Date dateNeeded) {
 		this.dateNeeded = dateNeeded;
 	}
 
@@ -152,12 +152,12 @@ public class PurchaseRequest {
 	}
 
 
-	public LocalDateTime getSubmittedDate() {
+	public Timestamp getSubmittedDate() {
 		return submittedDate;
 	}
 
 
-	public void setSubmittedDate(LocalDateTime submittedDate) {
+	public void setSubmittedDate(Timestamp submittedDate) {
 		this.submittedDate = submittedDate;
 	}
 
