@@ -6,5 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 // CRUD refers Create, Read, Update, Delete
 
 public interface PurchaseRequestRepository extends CrudRepository<PurchaseRequest, Integer> {
+	Iterable<PurchaseRequest> findAllByUserIdNot(int id);
 
 }

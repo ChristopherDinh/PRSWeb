@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.prs.business.user.User;
 
 @Entity
@@ -29,8 +29,10 @@ public class PurchaseRequest {
 	private String deliveryMode;
 	private String status;
 	private double total;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
 	private Timestamp submittedDate;
 	private String reasonForRejection;
+	
 	public static final String STATUS_NEW = "New";
 	public static final String STATUS_REVIEW = "Review";
 	public static final String STATUS_EDIT = "Edit";

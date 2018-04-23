@@ -30,7 +30,7 @@ public class PurchaseRequestController extends BaseController{
 	
 
 	@GetMapping(path="/List")
-	public @ResponseBody Iterable<PurchaseRequest> getAllPurchaseRequest() {
+	public @ResponseBody Iterable<PurchaseRequest> getAllPurchaseRequests() {
 		return purchaseRequestRepository.findAll();
 	}
 	@GetMapping(path="/Get")
@@ -41,6 +41,7 @@ public class PurchaseRequestController extends BaseController{
 	@PostMapping(path="/Add")
 	public @ResponseBody PRSMaintenanceReturn addNewPurchaseRequest (@RequestBody PurchaseRequest purchaseRequest) {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		purchaseRequest.setSubmittedDate(ts);
 		purchaseRequest.setStatus(PurchaseRequest.STATUS_NEW);
 		try {
 			purchaseRequestRepository.save(purchaseRequest);
@@ -77,6 +78,15 @@ public class PurchaseRequestController extends BaseController{
 	}
 	@PostMapping(path="/SubmitForReview") 
 	public @ResponseBody PRSMaintenanceReturn submitForReview (@RequestBody PurchaseRequest pr) {
+		Optional<PurchaseRequest> prOpt = purchaseRequestRepository.findById(pr.getId());
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+        pr = prOpt.get(); 
+		if(pr.getTotal() < 50.0) {
+             pr.setStatus(PurchaseRequest.STATUS_APPROVED);
+         }else {
+             pr.setStatus(PurchaseRequest.STATUS_REVIEW);
+         }
+         pr.setSubmittedDate(ts);
 		try {
 			pr.setStatus(PurchaseRequest.STATUS_REVIEW);
 			pr.setSubmittedDate(new Timestamp(System.currentTimeMillis()));
@@ -89,4 +99,8 @@ public class PurchaseRequestController extends BaseController{
 		
 		return PRSMaintenanceReturn.getMaintReturn(pr);
 	}
-}
+	@GetMapping(path = "/GetRequestReview")
+	public @ResponseBody Iterable<PurchaseRequest> getRequestReview(@RequestParam int id) {
+		return purchaseRequestRepository.findAllByUserIdNot(id);
+	}
+	}

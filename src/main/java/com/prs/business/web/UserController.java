@@ -78,7 +78,7 @@ public class UserController extends BaseController{
 		}
 		
 	}
-	@PostMapping(path="/Authenticate")
+	@GetMapping(path="/Authenticate")
 	public @ResponseBody List<User> getUser(@RequestBody String userName, String password) {
 		Optional<User> login = userRepository.findAllByUserNameAndPassword(userName, password);
 		return getReturnArray(login);
