@@ -82,9 +82,10 @@ public class UserController extends BaseController{
 		
 	}
 	@GetMapping(path="/Authenticate")
-	public @ResponseBody List<User> getUser(@RequestBody String userName, String password) {
-		Optional<User> login = userRepository.findAllByUserNameAndPassword(userName, password);
-		return getReturnArray(login);
+	public @ResponseBody List<User> authenticate(@RequestParam String uName, @RequestParam String password) {
+		User user = new User();
+		user = userRepository.findByUserNameAndPassword(uName, password);
+		return BaseController.getReturnArray(user);
 	}
 
 }
